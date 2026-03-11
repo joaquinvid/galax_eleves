@@ -1,0 +1,14 @@
+base version
+./bin/galax
+State updates per second: 51.3643
+
+first omp version
+./bin/galax -c CPU_FAST
+State updates per second: 117.114
+
+first gpu version
+./bin/galax -c GPU -n 10000
+State updates per second: 204.865
+
+./build/bin/galax -c CPU_FAST -n 10000
+State updates per second: 4.60268
