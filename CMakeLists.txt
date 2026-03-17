@@ -43,9 +43,12 @@ include_directories (PUBLIC "${CMAKE_CURRENT_BINARY_DIR}/src/")
 # add library & executable
 add_library (galax_display SHARED ${SRC_FILES_DISPLAY})
 if(GALAX_LINK_CUDA)
+    set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -O3 -use_fast_math")
     add_library (galax_cuda SHARED ${SRC_FILES_CUDA})
 endif(GALAX_LINK_CUDA)
 add_executable(galax ${SRC_FILES_MAIN})
+
+target_compile_options(galax_cuda PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--keep;-src-in-ptx>)
 
 # cli
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/lib/cli/include/CLI/CLI.hpp")

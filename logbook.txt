@@ -12,3 +12,22 @@ State updates per second: 204.865
 
 ./build/bin/galax -c CPU_FAST -n 10000
 State updates per second: 4.60268
+
+tiling implemented
+./bin/galax -c GPU -n 10000
+State updates per second: 463.455
+
+float4 implemented
+./bin/galax -c GPU -n 10000
+State updates per second: 610.283
+
+./bin/galax -c GPU -n 10000 --display NO
+State updates per second: 1138.07
+
+fast_math compiled - my pc
+./bin/galax -c GPU -n 10000 --display NO
+State updates per second: 1317.94
+
+pc IMT
+./bin/galax -c GPU -n 10000 --display NO
+State updates per second: 869.019

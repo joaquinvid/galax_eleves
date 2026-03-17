@@ -6,7 +6,7 @@
 #define EPS (1.0f)
 #define BLOCK_SIZE 256 
 
-// Notice we now pass float4* for positions (which holds x,y,z,mass)
+// we now pass float4* for positions (which holds x,y,z,mass)
 __global__ void compute_acc(float4 * pos_mass_GPU, float3 * velocitiesGPU, float3 * accelerationsGPU, int n_particles)
 {
     unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -54,8 +54,8 @@ __global__ void compute_acc(float4 * pos_mass_GPU, float3 * velocitiesGPU, float
 
                 float dij = diffx * diffx + diffy * diffy + diffz * diffz;
                 
-                // NO MORE BRANCHES!
-                // 1. Calculate the fast math for the 'else' case
+                // branch eliminated
+                // 1. Calculate mult_far for the 'else' case
                 float inv_dist = rsqrtf(dij); 
                 float mult_far = 10.0f * (inv_dist * inv_dist * inv_dist);
                 
@@ -95,15 +95,12 @@ __global__ void maj_pos(float4 * pos_mass_GPU, float3 * velocitiesGPU, float3 * 
     pos_mass_GPU[i].x += velocitiesGPU[i].x * 0.1f;
     pos_mass_GPU[i].y += velocitiesGPU[i].y * 0.1f;
     pos_mass_GPU[i].z += velocitiesGPU[i].z * 0.1f;
-    // (Notice we don't touch pos_mass_GPU[i].w, because mass never changes!)
 }
 
-// THIS is the function that matches your kernel.cuh!
 void update_position_cu(float4* pos_mass_GPU, float3* velocitiesGPU, float3* accelerationsGPU, int n_particles)
 {
     int nblocks =  (n_particles + BLOCK_SIZE - 1) / BLOCK_SIZE;
 
-    // Launch both kernels using the new float4 array
     compute_acc<<<nblocks, BLOCK_SIZE>>>(pos_mass_GPU, velocitiesGPU, accelerationsGPU, n_particles);
     maj_pos    <<<nblocks, BLOCK_SIZE>>>(pos_mass_GPU, velocitiesGPU, accelerationsGPU, n_particles);
 }
